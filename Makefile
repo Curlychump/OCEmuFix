@@ -1,16 +1,18 @@
 ASSETS=https://github.com/MightyPirates/OpenComputers/trunk/src/main/resources/assets/opencomputers
 
-all: src/lua src/loot src/font.hex
+all: dependencies
 
-src/lua:
-	svn export $(ASSETS)/lua src/lua
-
-src/loot:
-	svn export $(ASSETS)/loot src/loot
-
-src/font.hex:
-	svn export $(ASSETS)/font.hex src/font.hex
-
+dependencies:
+	git init
+	git config core.sparsecheckout true
+	echo src/main/resources/assets/opencomputers/font.hex >> .git/info/sparse-checkout
+	echo src/main/resources/assets/opencomputers/loot >> .git/info/sparse-checkout
+	echo src/main/resources/assets/opencomputers/lua >> .git/info/sparse-checkout
+	git remote add -f origin https://github.com/MightyPirates/OpenComputers.git
+	git pull origin master-MC1.7.10
+	git remote rm origin
+	mv src/main/resources/assets/opencomputers/* -t src
+	rm -fd src/main
 clean:
 	rm -rf src/lua
 	rm -rf src/loot
